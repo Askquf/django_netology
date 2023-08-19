@@ -14,3 +14,23 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
+
+class Tag(models.Model):
+    name = models.CharField(max_length=30, verbose_name='Название')
+    articles = models.ManyToManyField(Article, related_name='tags', through='Scope')
+
+class Scope(models.Model):
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name='scopes')
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='scopes')
+    is_main = models.BooleanField()
+
+    def save(self, *args, **kwargs):
+        if self.is_main:
+            scopes = self.article.scopes.all()
+            for scope in scopes:
+                if scope.is_main:
+                    raise Exception('Нельзя иметь более одного главного тэга')
+        super(Scope, self).save(*args, **kwargs)
+
+    class Meta:
+        ordering = ['-is_main']

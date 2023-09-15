@@ -8,10 +8,14 @@ from .models import Article, Scope, Tag
 
 class RelationshipInlineFormset(BaseInlineFormSet):
     def save(self, *args, **kwargs):
-        try:
+        main_tag = 0
+        for form in self.forms:
+            if form.cleaned_data.get('is_main') == True:
+                main_tag += 1
+        if main_tag > 1:
+            raise ValidationError('Возможен только один главный тэг!')
+        else:
             super().save(*args, **kwargs)
-        except:
-           raise ValidationError('Возможен только один главный тэг!')
 
 
 class SomeInline(admin.TabularInline):

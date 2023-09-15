@@ -24,13 +24,5 @@ class Scope(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='scopes')
     is_main = models.BooleanField()
 
-    def save(self, *args, **kwargs):
-        if self.is_main:
-            scopes = self.article.scopes.all()
-            for scope in scopes:
-                if scope.is_main:
-                    raise Exception('Нельзя иметь более одного главного тэга')
-        super(Scope, self).save(*args, **kwargs)
-
     class Meta:
         ordering = ['-is_main']

@@ -7,7 +7,6 @@ from .filters import AdvertisementFilter
 
 class CreatorOrReadOnly(BasePermission):
     def has_object_permission(self, request, view, obj):
-        print(request.method, obj.creator, request.user)
         if request.method == 'GET':
             return True
         else:

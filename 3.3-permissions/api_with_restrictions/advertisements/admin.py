@@ -1,3 +1,5 @@
 from django.contrib import admin
-
-# Register your models here.
+from .models import Advertisement
+@admin.register(Advertisement)
+class Admin(admin.ModelAdmin):
+    list_display = ['title', 'description', 'status', 'creator', 'created_at']
